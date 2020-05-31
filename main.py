@@ -17,17 +17,17 @@ flightDoor = 10000
 bufsize = 4812
 
 
-def downlinkThread():
-    server_address = (flightIP, flightDoor)
-    print('starting up on {} port {}'.format(*server_address))
-    sock.bind(server_address)
-    while True:
-      print(downlink.read(sock, bufsize))
+#def downlinkThread():
+#    server_address = (flightIP, flightDoor)
+#    print('starting up on {} port {}'.format(*server_address))
+#    sock.bind(server_address)
+#    while True:
+#      print(downlink.read(sock, bufsize))
 
 
 
 
-command_list = ['']
+#command_list = ['']
 
 def userInterface():
    server_address = (flightIP, flightDoor)
@@ -57,11 +57,13 @@ def userInterface():
    window.Finalize()
    window['-DOWNLINK-'].print('starting up on {} port {}'.format(*server_address))
    window['-DOWNLINK-'].print('waiting to receive message')
+   #TODO Definir actions do MENU
    while True:
       ready = select.select([sock], [], [], 1)
       if ready[0]:
          data_received = sock.recv(bufsize)
          #TODO Gravar em Documento
+         #TODO Registar dados para base de dados
          window['-DOWNLINK-'].print(data_received)
          window.Refresh()
       event, values = window.Read(timeout=0)
@@ -70,6 +72,9 @@ def userInterface():
          sock.close()
          break
       if event == 'SEND': 
+         #TODO enviar comando via socket
+         dataSend = values['-COM-']
+         sock.send(dataSend)
          window['-UPLINK-'].print(time.ctime(), '>', values['-COM-'])
          print(event, values)
 
